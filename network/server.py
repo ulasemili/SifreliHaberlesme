@@ -19,7 +19,7 @@ def receive_messages():
     while True:
         try:
             data = conn.recv(1024)
-            if not data:
+            if not data: 
                 break
             print(f"\n[CLIENT]: {data.decode()}")
         except:
