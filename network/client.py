@@ -35,20 +35,30 @@ def auth_menu():
         return None
 
 
+def get_connection_info():
+    server_ip = input("Sunucu Tailscale IP: ")
+
+    key = input("Şifreleme Anahtarı: ")
+
+    return server_ip, key
+
+
 username = auth_menu()
 
 if username is None:
     print("Giriş yapılamadı. Program kapatılıyor.")
     exit()
 
-SERVER_IP = "100.87.168.123"
+SERVER_IP, key = get_connection_info()
+
+#SERVER_IP = "100.87.168.123"
 PORT = 5050
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((SERVER_IP, PORT))
 print("[BAĞLANDI]")
 
-key = input("Şifreleme Anahtarı: ")
+#key = input("Şifreleme Anahtarı: ")  keyi kullanıcıdan alacağımız için yorum satırına aldık
 matrix = create_matrix(key)
 
 

@@ -1,7 +1,46 @@
 import socket
 import threading
 from crypto.playfair import create_matrix, encrypt, decrypt
-from database.db import save_message, create_tables
+from database.db import save_message, create_tables,register_user, login_user
+
+def auth_menu():
+    create_tables()
+
+    print("1 - Kayıt Ol")
+    print("2 - Giriş Yap")
+
+    choice = input("Seçim: ")
+
+    username = input("Kullanıcı adı: ")
+    password = input("Şifre: ")
+
+    if choice == "1":
+        success = register_user(username, password)
+
+        if success:
+            return username
+        else:
+            return None
+
+    elif choice == "2":
+        success = login_user(username, password)
+
+        if success:
+            return username
+        else:
+            return None
+
+    else:
+        print("Geçersiz seçim.")
+        return None
+
+
+username = auth_menu()
+
+if username is None:
+    print("Giriş yapılamadı. Program kapatılıyor.")
+    exit()
+
 
 HOST = "0.0.0.0"
 PORT = 5050
@@ -43,17 +82,16 @@ def receive_messages():
 
 # 🔹 Mesaj gönderme thread'i
 def send_messages():
-    name = input("ADINIZ : ")
 
     while True:
         try:
             msg = input("Mesajınız: ")
 
-            full_msg = f"{name}: {msg}"
+            full_msg = f"{username}: {msg}"
 
             encrypted_msg = encrypt(full_msg, matrix)
             conn.send(encrypted_msg.encode())
-            save_message(name, msg)
+            save_message(username, msg)
 
         except Exception as e:
             print("HATA:", e)
